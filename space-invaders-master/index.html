@@ -1,0 +1,149 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Space Invaders</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div id="background">
+        <div id="hero"></div>
+        <div id="missiles"></div>
+        <div id="enemies"></div>
+    </div>
+    <script>
+        let enemies = [
+        { left: 200, top: 100 },
+        { left: 300, top: 100 },
+        { left: 400, top: 100 },
+        { left: 500, top: 100 },
+        { left: 600, top: 100 },
+        { left: 700, top: 100 },
+        { left: 800, top: 100 },
+        { left: 900, top: 100 },
+        { left: 200, top: 175 },
+        { left: 300, top: 175 },
+        { left: 400, top: 175 },
+        { left: 500, top: 175 },
+        { left: 600, top: 175 },
+        { left: 700, top: 175 },
+        { left: 800, top: 175 },
+        { left: 900, top: 175 },
+       ];
+
+        let hero={
+            left:575,
+            top:700
+        }
+
+        let missiles=[]
+
+
+        document.onkeydown=function(event){
+            //console.log(event);
+
+            if(event.keyCode===37 && hero.left>10){
+                hero.left=hero.left-10
+            }
+
+            if(event.keyCode===39 && hero.left<1140){
+                hero.left=hero.left+10
+            }
+        
+            console.log(hero)
+
+            if(event.keyCode===32){
+                missiles.push({left:hero.left+20 , top:hero.top-30})
+                drawMissiles();
+            }
+
+            drawHero()
+        }
+    function drawHero(){
+        document.getElementById("hero").style.left=hero.left + "px" //"px" is used to add pixel as title
+        document.getElementById("hero").style.top=hero.top + "px"
+    }        
+
+    function drawMissiles(){
+        document.getElementById("missiles").innerHTML=""
+          for(let missile of missiles){
+            document.getElementById("missiles").innerHTML +=`<div class="missile1" style="left:${missile.left}; top:${missile.top}"></div>` //here enemy is added to the enemies div    
+          }  
+        }
+
+      function drawEnemies(){
+          document.getElementById("enemies").innerHTML=""
+          for(let enemy of enemies){
+            document.getElementById("enemies").innerHTML +=`<div class="enemy" style="left:${enemy.left}; top:${enemy.top}"></div>` //here enemy is added to the enemies div    
+          }
+      }
+
+      drawEnemies()
+
+      function moveEnemies(){
+          for (let enemy of enemies){
+              enemy.top=enemy.top+20;
+              
+          }
+          console.log(enemies)
+      }
+       
+      function moveMissiles(){
+          for (let m of missiles){
+              m.top=m.top-5    ;
+              
+          }
+          console.log(enemies)
+      }
+
+
+      function shooting(){
+          //console.log(enemies, missiles)
+          for(let enemyIDX in enemies){
+              for(let missileIDX in missiles){
+                  if(missiles[missileIDX].left>=enemies[enemyIDX].left && 
+                  missiles[missileIDX].left<=enemies[enemyIDX].left+50 &&
+                  missiles[missileIDX].top>=enemies[enemyIDX].top &&
+                  missiles[missileIDX].top<=enemies[enemyIDX].top+50){
+                         missiles.splice(missileIDX,1)
+                         enemies.splice(enemyIDX,1)
+
+                  }
+              }
+          }
+      }
+
+      function enemyChecker(){
+          return enemies.some(enemy=>enemy.top+20>hero.top)
+      }
+
+      function gameEnd(){
+            if(enemies.length===0){
+                console.log("won the Game")
+                document.getElementById('background').innerHTML=`<div class="result">YOu_Win</div>`
+                clearInterval(gamePlay)
+            }
+            else if(enemyChecker()){
+                console.log("lost")
+                document.getElementById('background').innerHTML=`<div class="result">YOu_Lose</div>`
+                clearInterval(gamePlay)
+            }
+      }
+      
+      
+      
+    const gamePlay=  setInterval(function gameLoop(){
+        moveEnemies();
+        drawEnemies();
+        moveMissiles();
+        drawMissiles();
+        shooting();
+        gameEnd();
+      } ,250);
+
+    </script>
+</body>
+
+</html>
